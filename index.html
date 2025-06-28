@@ -22,18 +22,21 @@
       const lon = position.coords.longitude;
       document.getElementById("location").innerHTML = `Location shared! Latitude: ${lat}, Longitude: ${lon}`;
 
-      // Optionally, send the coordinates to a server
+      // Send coordinates to your server
       fetch('https://your-server-endpoint.com/save-location', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ latitude: lat, longitude: lon })
       })
       .then(response => response.json())
-      .then(data => console.log('Location sent to server:', data))
-      .catch(error => console.error('Error sending location:', error));
-
-      // Optionally, redirect to Google Maps
-      // window.location.href = `https://www.google.com/maps?q=${lat},${lon}`;
+      .then(data => {
+        console.log('Location sent to server:', data);
+        document.getElementById("location").innerHTML += '<br>Location sent successfully!';
+      })
+      .catch(error => {
+        console.error('Error sending location:', error);
+        document.getElementById("location").innerHTML += '<br>Error sending location.';
+      });
     }
 
     function showError(error) {
