@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Your Location</title>
+</head>
+<body>
+  <p id="location">Requesting your location...</p>
+  <script>
+    // Automatically request location when the page loads
+    window.onload = function() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+      }
+    };
+
+    function showPosition(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      document.getElementById("location").innerHTML = `Location shared! Latitude: ${lat}, Longitude: ${lon}`;
+
+      // Optionally, send the coordinates to a server
+      fetch('https://your-server-endpoint.com/save-location', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude: lat, longitude: lon })
+      })
+      .then(response => response.json())
+      .then(data => console.log('Location sent to server:', data))
+      .catch(error => console.error('Error sending location:', error));
+
+      // Optionally, redirect to Google Maps
+      // window.location.href = `https://www.google.com/maps?q=${lat},${lon}`;
+    }
+
+    function showError(error) {
+      let message;
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          message = "You denied the request for location access.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          message = "Location information is unavailable.";
+          break;
+        case error.TIMEOUT:
+          message = "The request to get location timed out.";
+          break;
+        default:
+          message = "An unknown error occurred.";
+          break;
+      }
+      document.getElementById("location").innerHTML = message;
+    }
+  </script>
+</body>
+</html>
