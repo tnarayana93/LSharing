@@ -8,7 +8,6 @@
 <body>
   <p id="location">Requesting your location...</p>
   <script>
-    // Automatically request location when the page loads
     window.onload = function() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition, showError);
@@ -22,15 +21,13 @@
       const lon = position.coords.longitude;
       document.getElementById("location").innerHTML = `Location shared! Latitude: ${lat}, Longitude: ${lon}`;
 
-      // Send coordinates to your server
-      fetch('https://your-server-endpoint.com/save-location', {
+      fetch('https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjYwNTZiMDYzMTA0MzY1MjZlNTUzNzUxMzci_pc', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latitude: lat, longitude: lon })
+        body: JSON.stringify({ latitude: lat, longitude: lon, timestamp: new Date().toISOString() })
       })
       .then(response => response.json())
       .then(data => {
-        console.log('Location sent to server:', data);
         document.getElementById("location").innerHTML += '<br>Location sent successfully!';
       })
       .catch(error => {
